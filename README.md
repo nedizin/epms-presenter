@@ -6,7 +6,7 @@
 
 ## About
 
-This app was built as a **PAP (Projeto de Aptidão Profissional)** — the final certification project — by students of the *Técnico de Desenvolvimento de Software* course at EPMS. It runs on a Temi social robot stationed at the school entrance, allowing visitors to browse courses, ask questions to a chat assistant, and discover which course best suits them through an interactive quiz.
+This app was built as a **PAP (Projeto de Aptidão Profissional)** — the final certification project — by students of the *Eletrónica, Automação e Computadores* course at EPMS. It runs on a Temi social robot designed to help students present the school on outreach events, allowing the interested ones to browse courses, ask questions to a chat assistant, and discover which course best suits them through an interactive quiz.
 
 ---
 
