@@ -1,0 +1,250 @@
+<svg width="1200" height="420" viewBox="0 0 1200 420" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="1200" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#060E22"/>
+      <stop offset="45%"  stop-color="#0C1B42"/>
+      <stop offset="100%" stop-color="#060E22"/>
+    </linearGradient>
+    <linearGradient id="hdrGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#0D47A1"/>
+      <stop offset="100%" stop-color="#1976D2"/>
+    </linearGradient>
+    <linearGradient id="beautyGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#E91E63"/>
+      <stop offset="100%" stop-color="#9A0044"/>
+    </linearGradient>
+    <linearGradient id="healthGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#43A047"/>
+      <stop offset="100%" stop-color="#2A6B2E"/>
+    </linearGradient>
+    <linearGradient id="hosGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#FF8F00"/>
+      <stop offset="100%" stop-color="#A85D00"/>
+    </linearGradient>
+    <linearGradient id="commGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#8E24AA"/>
+      <stop offset="100%" stop-color="#5A1070"/>
+    </linearGradient>
+    <linearGradient id="sportsGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#1E88E5"/>
+      <stop offset="100%" stop-color="#115899"/>
+    </linearGradient>
+    <linearGradient id="techGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#3949AB"/>
+      <stop offset="100%" stop-color="#222F78"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="420" fill="url(#bgGrad)"/>
+
+  <!-- Ambient glow circles -->
+  <circle cx="1175" cy="-55" r="310" fill="#1976D2" fill-opacity="0.07"/>
+  <circle cx="25"   cy="490" r="295" fill="#0D47A1" fill-opacity="0.06"/>
+  <circle cx="452"  cy="208" r="230" fill="#1565C0" fill-opacity="0.05"/>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- PHONE 1: Main Screen (behind, rotated) -->
+  <!-- ═══════════════════════════════════════ -->
+  <g transform="rotate(-9, 168, 208)">
+    <rect x="78" y="53" width="180" height="310" rx="24" fill="#091830" stroke="#1A3870" stroke-width="2"/>
+    <svg x="80" y="55" width="176" height="306" overflow="hidden">
+      <rect width="176" height="306" fill="#0C1D3C"/>
+      <!-- Header -->
+      <rect width="176" height="52" fill="url(#hdrGrad)"/>
+      <rect x="25" y="11" width="126" height="14" rx="6" fill="white" fill-opacity="0.22"/>
+      <circle cx="160" cy="6" r="32" fill="white" fill-opacity="0.04"/>
+      <!-- Course cards row 1 -->
+      <rect x="8"  y="60" width="75" height="82" rx="10" fill="url(#beautyGrad)"/>
+      <rect x="93" y="60" width="75" height="82" rx="10" fill="url(#healthGrad)"/>
+      <!-- Card icons -->
+      <circle cx="46"  cy="83" r="13" fill="white" fill-opacity="0.22"/>
+      <circle cx="131" cy="83" r="13" fill="white" fill-opacity="0.22"/>
+      <!-- Card text -->
+      <rect x="15"  y="101" width="55" height="6" rx="3" fill="white" fill-opacity="0.65"/>
+      <rect x="15"  y="111" width="42" height="4" rx="2" fill="white" fill-opacity="0.35"/>
+      <rect x="100" y="101" width="55" height="6" rx="3" fill="white" fill-opacity="0.65"/>
+      <rect x="100" y="111" width="42" height="4" rx="2" fill="white" fill-opacity="0.35"/>
+      <!-- Course cards row 2 -->
+      <rect x="8"  y="150" width="75" height="82" rx="10" fill="url(#hosGrad)"/>
+      <rect x="93" y="150" width="75" height="82" rx="10" fill="url(#commGrad)"/>
+      <circle cx="46"  cy="173" r="13" fill="white" fill-opacity="0.22"/>
+      <circle cx="131" cy="173" r="13" fill="white" fill-opacity="0.22"/>
+      <rect x="15"  y="191" width="55" height="6" rx="3" fill="white" fill-opacity="0.65"/>
+      <rect x="15"  y="201" width="42" height="4" rx="2" fill="white" fill-opacity="0.35"/>
+      <rect x="100" y="191" width="55" height="6" rx="3" fill="white" fill-opacity="0.65"/>
+      <rect x="100" y="201" width="42" height="4" rx="2" fill="white" fill-opacity="0.35"/>
+      <!-- Row 3 (partial, suggests scroll) -->
+      <rect x="8"  y="240" width="75" height="38" rx="10" fill="url(#sportsGrad)" fill-opacity="0.65"/>
+      <rect x="93" y="240" width="75" height="38" rx="10" fill="url(#techGrad)"   fill-opacity="0.65"/>
+      <!-- Bottom bar -->
+      <rect y="256" width="176" height="50" fill="#0C1D3C"/>
+      <!-- Chat FAB -->
+      <circle cx="38" cy="281" r="18" fill="#0D47A1" stroke="#1976D2" stroke-width="1.5"/>
+      <rect x="30" y="277" width="16" height="2.5" rx="1.25" fill="white"/>
+      <rect x="30" y="283" width="16" height="2.5" rx="1.25" fill="white"/>
+      <rect x="30" y="289" width="11" height="2.5" rx="1.25" fill="white"/>
+    </svg>
+    <!-- Crisp border overlay -->
+    <rect x="78" y="53" width="180" height="310" rx="24" fill="none" stroke="#2050A0" stroke-width="1.5"/>
+    <rect x="118" y="56" width="100" height="7" rx="3.5" fill="#0D47A1"/>
+  </g>
+
+  <!-- ══════════════════════════════════════ -->
+  <!-- PHONE 2: Quiz Screen (front, tilted)  -->
+  <!-- ══════════════════════════════════════ -->
+  <g transform="rotate(7, 308, 212)">
+    <rect x="218" y="62" width="180" height="310" rx="24" fill="#0D1E42" stroke="#2456A4" stroke-width="2.5"/>
+    <svg x="220" y="64" width="176" height="306" overflow="hidden">
+      <rect width="176" height="306" fill="#0E2050"/>
+      <!-- Header -->
+      <rect width="176" height="55" fill="url(#hdrGrad)"/>
+      <rect x="30" y="12" width="116" height="11" rx="4" fill="white" fill-opacity="0.26"/>
+      <rect x="50" y="27" width="76" height="7"  rx="3" fill="white" fill-opacity="0.16"/>
+      <circle cx="168" cy="-4" r="28" fill="white" fill-opacity="0.04"/>
+      <!-- Progress bar -->
+      <rect y="55" width="176" height="4" fill="#0D3A8A"/>
+      <rect y="55" width="117" height="4" fill="#42A5F5"/>
+      <!-- Question card -->
+      <rect x="10" y="70" width="156" height="80" rx="14" fill="white" fill-opacity="0.09" stroke="white" stroke-opacity="0.13" stroke-width="1"/>
+      <circle cx="88" cy="87" r="13" fill="white" fill-opacity="0.13"/>
+      <rect x="30" y="106" width="116" height="8" rx="4" fill="white" fill-opacity="0.58"/>
+      <rect x="42" y="118" width="92"  height="6" rx="3" fill="white" fill-opacity="0.38"/>
+      <rect x="50" y="128" width="76"  height="6" rx="3" fill="white" fill-opacity="0.38"/>
+      <!-- Answer A (highlighted/selected) -->
+      <rect x="10" y="162" width="156" height="32" rx="10" fill="#1976D2" fill-opacity="0.3" stroke="#42A5F5" stroke-opacity="0.5" stroke-width="1"/>
+      <circle cx="28" cy="178" r="9" fill="#1976D2" fill-opacity="0.7"/>
+      <rect x="44" y="174" width="90" height="6" rx="3" fill="white" fill-opacity="0.82"/>
+      <rect x="44" y="183" width="68" height="5" rx="2" fill="white" fill-opacity="0.44"/>
+      <!-- Answer B -->
+      <rect x="10" y="201" width="156" height="32" rx="10" fill="white" fill-opacity="0.07"/>
+      <circle cx="28" cy="217" r="9" fill="#43A047" fill-opacity="0.5"/>
+      <rect x="44" y="213" width="98" height="6" rx="3" fill="white" fill-opacity="0.6"/>
+      <rect x="44" y="222" width="74" height="5" rx="2" fill="white" fill-opacity="0.3"/>
+      <!-- Answer C -->
+      <rect x="10" y="240" width="156" height="32" rx="10" fill="white" fill-opacity="0.07"/>
+      <circle cx="28" cy="256" r="9" fill="#FF8F00" fill-opacity="0.5"/>
+      <rect x="44" y="252" width="84" height="6" rx="3" fill="white" fill-opacity="0.6"/>
+      <rect x="44" y="261" width="62" height="5" rx="2" fill="white" fill-opacity="0.3"/>
+      <!-- Answer D -->
+      <rect x="10" y="279" width="156" height="32" rx="10" fill="white" fill-opacity="0.07"/>
+      <circle cx="28" cy="295" r="9" fill="#8E24AA" fill-opacity="0.5"/>
+      <rect x="44" y="291" width="88" height="6" rx="3" fill="white" fill-opacity="0.6"/>
+      <rect x="44" y="300" width="64" height="5" rx="2" fill="white" fill-opacity="0.3"/>
+    </svg>
+    <rect x="218" y="62" width="180" height="310" rx="24" fill="none" stroke="#3060C0" stroke-width="1.5"/>
+    <rect x="258" y="65" width="100" height="7" rx="3.5" fill="#0D47A1"/>
+  </g>
+
+  <!-- ═══════════════════ -->
+  <!-- CENTER: Brand text -->
+  <!-- ═══════════════════ -->
+  <!-- School name pill -->
+  <rect x="473" y="60" width="352" height="30" rx="15" fill="white" fill-opacity="0.07" stroke="white" stroke-opacity="0.09" stroke-width="1"/>
+  <text x="649" y="80"
+        text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-size="11" letter-spacing="1.8" fill="white" fill-opacity="0.58">ESCOLA PROFISSIONAL MARIANA SEIXAS</text>
+
+  <!-- "EPMS" -->
+  <text x="649" y="183"
+        text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-weight="900" font-size="98" letter-spacing="-4" fill="white">EPMS</text>
+
+  <!-- "PRESENTER" -->
+  <text x="649" y="229"
+        text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-weight="200" font-size="36" letter-spacing="13" fill="white" fill-opacity="0.72">PRESENTER</text>
+
+  <!-- Divider -->
+  <line x1="502" y1="252" x2="796" y2="252" stroke="white" stroke-opacity="0.11" stroke-width="1"/>
+
+  <!-- Tagline -->
+  <text x="649" y="276"
+        text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-size="13.5" fill="white" fill-opacity="0.48">Aplicação interativa para o Robô Temi · PAP 2025/2026</text>
+
+  <!-- Tech badge row -->
+  <rect x="486" y="295" width="76" height="26" rx="13"
+        fill="#7F52FF" fill-opacity="0.18" stroke="#7F52FF" stroke-opacity="0.45" stroke-width="1"/>
+  <text x="524" y="312" text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-size="12" font-weight="600" fill="#C5B3FF">Kotlin</text>
+
+  <rect x="572" y="295" width="142" height="26" rx="13"
+        fill="#00897B" fill-opacity="0.15" stroke="#00897B" stroke-opacity="0.4" stroke-width="1"/>
+  <text x="643" y="312" text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-size="12" font-weight="600" fill="#80CBC4">Jetpack Compose</text>
+
+  <rect x="724" y="295" width="96" height="26" rx="13"
+        fill="#1976D2" fill-opacity="0.18" stroke="#1976D2" stroke-opacity="0.4" stroke-width="1"/>
+  <text x="772" y="312" text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-size="12" font-weight="600" fill="#90CAF9">Material 3</text>
+
+  <!-- ════════════════ -->
+  <!-- RIGHT: Stats    -->
+  <!-- ════════════════ -->
+  <rect x="870" y="90"  width="162" height="58" rx="14"
+        fill="white" fill-opacity="0.06" stroke="white" stroke-opacity="0.1" stroke-width="1"/>
+  <text x="951" y="116" text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-weight="800" font-size="28" fill="white">13</text>
+  <text x="951" y="136" text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-size="11" fill="white" fill-opacity="0.5">Cursos Profissionais</text>
+
+  <rect x="870" y="160" width="162" height="58" rx="14"
+        fill="white" fill-opacity="0.06" stroke="white" stroke-opacity="0.1" stroke-width="1"/>
+  <text x="951" y="186" text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-weight="800" font-size="28" fill="white">6</text>
+  <text x="951" y="206" text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-size="11" fill="white" fill-opacity="0.5">Áreas de Formação</text>
+
+  <rect x="870" y="230" width="162" height="58" rx="14"
+        fill="#0D47A1" fill-opacity="0.28" stroke="#1976D2" stroke-opacity="0.35" stroke-width="1"/>
+  <text x="951" y="255" text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-weight="700" font-size="15" fill="white">Temi Robot</text>
+  <text x="951" y="274" text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-size="11" fill="white" fill-opacity="0.5">minSdk 29 · targetSdk 36</text>
+
+  <!-- Thin separator before strip -->
+  <line x1="0" y1="384" x2="1200" y2="384" stroke="white" stroke-opacity="0.06" stroke-width="1"/>
+
+  <!-- ════════════════════════ -->
+  <!-- CATEGORY COLOUR STRIP   -->
+  <!-- ════════════════════════ -->
+  <rect x="0"    y="385" width="200" height="35" fill="#E91E63"/>
+  <rect x="200"  y="385" width="200" height="35" fill="#43A047"/>
+  <rect x="400"  y="385" width="200" height="35" fill="#FF8F00"/>
+  <rect x="600"  y="385" width="200" height="35" fill="#8E24AA"/>
+  <rect x="800"  y="385" width="200" height="35" fill="#1E88E5"/>
+  <rect x="1000" y="385" width="200" height="35" fill="#3949AB"/>
+
+  <text x="100"  y="407" text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-size="11" font-weight="600" fill="white" fill-opacity="0.92">Beleza</text>
+  <text x="300"  y="407" text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-size="11" font-weight="600" fill="white" fill-opacity="0.92">Saúde &amp; Educação</text>
+  <text x="500"  y="407" text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-size="11" font-weight="600" fill="white" fill-opacity="0.92">Hotelaria</text>
+  <text x="700"  y="407" text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-size="11" font-weight="600" fill="white" fill-opacity="0.92">Comunicação</text>
+  <text x="900"  y="407" text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-size="11" font-weight="600" fill="white" fill-opacity="0.92">Desporto</text>
+  <text x="1100" y="407" text-anchor="middle"
+        font-family="system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif"
+        font-size="11" font-weight="600" fill="white" fill-opacity="0.92">Tecnologia</text>
+</svg>

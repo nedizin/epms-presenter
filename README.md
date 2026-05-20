@@ -1,4 +1,6 @@
-# EPMS Presenter — Temi Robot App
+<p align="center">
+  <img src="banner.svg" alt="EPMS Presenter" width="100%"/>
+</p>
 
 > A Jetpack Compose Android application designed to run on the **Temi robot** at [Escola Profissional Mariana Seixas (EPMS)](https://epms.pt), presenting the school's 13 vocational courses to prospective students in an interactive, engaging way.
 
