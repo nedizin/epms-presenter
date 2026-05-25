@@ -1,7 +1,7 @@
 package com.example.temiepmspresenter.ui.screens
 
-import android.speech.tts.TextToSpeech
-import android.speech.tts.UtteranceProgressListener
+import com.robotemi.sdk.Robot
+import com.robotemi.sdk.TtsRequest
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.RepeatMode
@@ -67,7 +67,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -78,7 +77,6 @@ import com.example.temiepmspresenter.ui.theme.EpmsPrimary
 import com.example.temiepmspresenter.ui.theme.EpmsSecondary
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.Locale
 
 @Composable
 fun ChatOverlay(onNavigateToCourseFinder: () -> Unit = {}) {
@@ -88,27 +86,18 @@ fun ChatOverlay(onNavigateToCourseFinder: () -> Unit = {}) {
     val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
 
-    val context = LocalContext.current
-    var chatTts by remember { mutableStateOf<TextToSpeech?>(null) }
     var isChatSpeaking by remember { mutableStateOf(false) }
 
-    DisposableEffect(context) {
-        var engine: TextToSpeech? = null
-        engine = TextToSpeech(context) { status ->
-            if (status == TextToSpeech.SUCCESS) {
-                engine?.setLanguage(Locale("pt", "PT"))
-                engine?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                    override fun onStart(utteranceId: String?) { isChatSpeaking = true }
-                    override fun onDone(utteranceId: String?) { isChatSpeaking = false }
-                    @Deprecated("Deprecated in Java")
-                    override fun onError(utteranceId: String?) { isChatSpeaking = false }
-                })
-                chatTts = engine
+    DisposableEffect(Unit) {
+        val ttsListener = object : Robot.TtsListener {
+            override fun onTtsStatusChanged(ttsRequest: TtsRequest) {
+                isChatSpeaking = ttsRequest.status == TtsRequest.Status.STARTED
             }
         }
+        Robot.getInstance()?.addTtsListener(ttsListener)
         onDispose {
-            engine?.stop()
-            engine?.shutdown()
+            Robot.getInstance()?.cancelAllTtsRequests()
+            Robot.getInstance()?.removeTtsListener(ttsListener)
         }
     }
 
@@ -146,16 +135,16 @@ fun ChatOverlay(onNavigateToCourseFinder: () -> Unit = {}) {
                 isSpeaking = isChatSpeaking,
                 onClose = {
                     isOpen = false
-                    chatTts?.stop()
+                    Robot.getInstance()?.cancelAllTtsRequests()
                     isChatSpeaking = false
                 },
                 onToggleSpeech = {
                     if (isChatSpeaking) {
-                        chatTts?.stop()
+                        Robot.getInstance()?.cancelAllTtsRequests()
                         isChatSpeaking = false
                     } else {
                         lastBotText?.let {
-                            chatTts?.speak(it.stripForSpeech(), TextToSpeech.QUEUE_FLUSH, null, "chat_msg")
+                            Robot.getInstance()?.speak(TtsRequest.create(it.stripForSpeech(), false))
                         }
                     }
                 },
@@ -179,7 +168,7 @@ fun ChatOverlay(onNavigateToCourseFinder: () -> Unit = {}) {
             onClick = {
                 isOpen = !isOpen
                 if (!isOpen) {
-                    chatTts?.stop()
+                    Robot.getInstance()?.cancelAllTtsRequests()
                     isChatSpeaking = false
                 }
                 if (isOpen && messages.isEmpty()) {

@@ -1,7 +1,7 @@
 package com.example.temiepmspresenter.ui.screens
 
-import android.speech.tts.TextToSpeech
-import android.speech.tts.UtteranceProgressListener
+import com.robotemi.sdk.Robot
+import com.robotemi.sdk.TtsRequest
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
@@ -63,7 +63,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -72,31 +71,21 @@ import com.example.temiepmspresenter.data.Course
 import com.example.temiepmspresenter.data.CurriculumComponent
 import com.example.temiepmspresenter.ui.theme.categoryColor
 import kotlinx.coroutines.delay
-import java.util.Locale
 
 @Composable
 fun CourseDetailScreen(course: Course, onBack: () -> Unit) {
-    val context = LocalContext.current
-    var tts by remember { mutableStateOf<TextToSpeech?>(null) }
     var isSpeaking by remember { mutableStateOf(false) }
 
-    DisposableEffect(context) {
-        var engine: TextToSpeech? = null
-        engine = TextToSpeech(context) { status ->
-            if (status == TextToSpeech.SUCCESS) {
-                engine?.setLanguage(Locale("pt", "PT"))
-                engine?.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-                    override fun onStart(utteranceId: String?) { isSpeaking = true }
-                    override fun onDone(utteranceId: String?) { isSpeaking = false }
-                    @Deprecated("Deprecated in Java")
-                    override fun onError(utteranceId: String?) { isSpeaking = false }
-                })
-                tts = engine
+    DisposableEffect(Unit) {
+        val ttsListener = object : Robot.TtsListener {
+            override fun onTtsStatusChanged(ttsRequest: TtsRequest) {
+                isSpeaking = ttsRequest.status == TtsRequest.Status.STARTED
             }
         }
+        Robot.getInstance()?.addTtsListener(ttsListener)
         onDispose {
-            engine?.stop()
-            engine?.shutdown()
+            Robot.getInstance()?.cancelAllTtsRequests()
+            Robot.getInstance()?.removeTtsListener(ttsListener)
         }
     }
 
@@ -242,14 +231,11 @@ fun CourseDetailScreen(course: Course, onBack: () -> Unit) {
                             IconButton(
                                 onClick = {
                                     if (isSpeaking) {
-                                        tts?.stop()
+                                        Robot.getInstance()?.cancelAllTtsRequests()
                                         isSpeaking = false
                                     } else {
-                                        tts?.speak(
-                                            buildCourseTranscript(course),
-                                            TextToSpeech.QUEUE_FLUSH,
-                                            null,
-                                            "course_${course.id}"
+                                        Robot.getInstance()?.speak(
+                                            TtsRequest.create(buildCourseTranscript(course), false)
                                         )
                                     }
                                 },

@@ -24,3 +24,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Temi EPMS Presenter"
 include(":app")
+include(":temi-sdk")
+project(":temi-sdk").projectDir = file("sdk-1.137.1/sdk")
