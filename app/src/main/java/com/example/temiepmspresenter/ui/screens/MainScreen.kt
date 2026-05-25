@@ -41,6 +41,8 @@ import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -221,6 +223,25 @@ fun MainScreen(
                 contentAlignment = Alignment.BottomStart
             ) {
                 ChatOverlay(onNavigateToCourseFinder = onNavigateToCourseFinder)
+            }
+
+            // Course Finder FAB — bottom-right shortcut
+            FloatingActionButton(
+                onClick = onNavigateToCourseFinder,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(
+                        end = 16.dp,
+                        bottom = innerPadding.calculateBottomPadding() + 16.dp
+                    ),
+                containerColor = EpmsSecondary,
+                elevation = FloatingActionButtonDefaults.elevation(
+                    defaultElevation = 8.dp,
+                    pressedElevation = 3.dp
+                ),
+                shape = CircleShape
+            ) {
+                Text("🧭", fontSize = 22.sp)
             }
         }
     }

@@ -1,171 +1,302 @@
 package com.example.temiepmspresenter.data
 
-data class QuizAnswer(
+data class DynamicAnswer(
     val text: String,
-    val courseScores: Map<String, Int>
+    val courseScores: Map<String, Int>,
+    val nextQuestionKey: String
 )
 
-data class QuizQuestion(
+data class DynamicQuestion(
+    val key: String,
     val question: String,
     val emoji: String,
-    val answers: List<QuizAnswer>
+    val answers: List<DynamicAnswer>
 )
 
-val quizQuestions = listOf(
-    QuizQuestion(
+const val RESULTS_KEY = "results"
+const val START_QUESTION_KEY = "q_start"
+const val ESTIMATED_TOTAL_QUESTIONS = 4
+
+val dynamicQuestions: Map<String, DynamicQuestion> = listOf(
+
+    // ── Q1: broad interest (everyone sees this) ──────────────────────────────
+    DynamicQuestion(
+        key = "q_start",
         question = "O que mais gostas de fazer nos tempos livres?",
         emoji = "🎯",
         answers = listOf(
-            QuizAnswer(
-                "Praticar desporto e atividades físicas",
-                mapOf("desporto" to 3, "acao-educativa" to 1)
+            DynamicAnswer(
+                "Praticar desporto e atividade física",
+                mapOf("desporto" to 2, "auxiliar-saude" to 1),
+                "q_sports"
             ),
-            QuizAnswer(
-                "Jogar videojogos ou programar",
-                mapOf("desenvolvimento-software" to 3, "conteudos-interativos" to 2, "informatica-gestao" to 1)
+            DynamicAnswer(
+                "Programar, jogar ou explorar tecnologia",
+                mapOf("desenvolvimento-software" to 2, "conteudos-interativos" to 1),
+                "q_tech"
             ),
-            QuizAnswer(
-                "Criar conteúdos (fotos, vídeos, arte)",
-                mapOf("multimedia" to 3, "conteudos-interativos" to 2, "comunicacao" to 2)
+            DynamicAnswer(
+                "Criar conteúdo, design ou arte digital",
+                mapOf("multimedia" to 2, "comunicacao" to 2),
+                "q_creative"
             ),
-            QuizAnswer(
-                "Cozinhar, cuidar de alguém ou decorar",
-                mapOf("cozinha" to 2, "cabeleireiro" to 2, "esteticista" to 2, "acao-educativa" to 1)
+            DynamicAnswer(
+                "Cuidar, ajudar ou ensinar outras pessoas",
+                mapOf("acao-educativa" to 2, "auxiliar-saude" to 2),
+                "q_care"
+            ),
+            DynamicAnswer(
+                "Cozinhar, decorar ou trabalhar com as mãos",
+                mapOf("cozinha" to 2, "cabeleireiro" to 1, "esteticista" to 1),
+                "q_hands"
             )
         )
     ),
-    QuizQuestion(
-        question = "Qual é a tua disciplina favorita na escola?",
-        emoji = "📚",
+
+    // ── Branch: Sports ───────────────────────────────────────────────────────
+    DynamicQuestion(
+        key = "q_sports",
+        question = "Que tipo de atividade desportiva preferes?",
+        emoji = "⚽",
         answers = listOf(
-            QuizAnswer(
-                "Educação Física",
-                mapOf("desporto" to 3, "acao-educativa" to 1)
+            DynamicAnswer(
+                "Treinar e competir em desportos de equipa",
+                mapOf("desporto" to 3),
+                "q_motivation"
             ),
-            QuizAnswer(
-                "Informática ou Matemática",
-                mapOf("desenvolvimento-software" to 2, "informatica-gestao" to 2, "eletronica-automacao" to 2, "sistemas-redes" to 1)
+            DynamicAnswer(
+                "Fitness, ginásio e treino pessoal",
+                mapOf("desporto" to 3),
+                "q_motivation"
             ),
-            QuizAnswer(
-                "Artes Visuais ou Línguas",
-                mapOf("comunicacao" to 2, "multimedia" to 2, "conteudos-interativos" to 1, "cabeleireiro" to 1)
+            DynamicAnswer(
+                "Cuidar da saúde e bem-estar físico dos outros",
+                mapOf("auxiliar-saude" to 3),
+                "q_motivation"
             ),
-            QuizAnswer(
-                "Ciências ou Biologia",
-                mapOf("auxiliar-saude" to 3, "acao-educativa" to 2, "esteticista" to 1)
+            DynamicAnswer(
+                "Animar e ensinar desporto a crianças e jovens",
+                mapOf("acao-educativa" to 2, "desporto" to 2),
+                "q_motivation"
+            ),
+            DynamicAnswer(
+                "Organizar e gerir eventos desportivos",
+                mapOf("desporto" to 2, "comunicacao" to 1),
+                "q_motivation"
             )
         )
     ),
-    QuizQuestion(
-        question = "Como preferes trabalhar?",
-        emoji = "💼",
+
+    // ── Branch: Technology ───────────────────────────────────────────────────
+    DynamicQuestion(
+        key = "q_tech",
+        question = "Na tecnologia, o que mais te atrai?",
+        emoji = "💻",
         answers = listOf(
-            QuizAnswer(
-                "Em equipa, ajudando pessoas diretamente",
-                mapOf("acao-educativa" to 2, "auxiliar-saude" to 2, "desporto" to 1, "cozinha" to 1)
+            DynamicAnswer(
+                "Programar aplicações, jogos ou websites",
+                mapOf("desenvolvimento-software" to 3, "conteudos-interativos" to 1),
+                "q_motivation"
             ),
-            QuizAnswer(
-                "De forma criativa, com ferramentas digitais",
-                mapOf("comunicacao" to 3, "multimedia" to 2, "conteudos-interativos" to 2)
+            DynamicAnswer(
+                "Montar, configurar e manter redes e hardware",
+                mapOf("sistemas-redes" to 3, "eletronica-automacao" to 2),
+                "q_motivation"
             ),
-            QuizAnswer(
-                "Com as mãos, de forma técnica e prática",
-                mapOf("cabeleireiro" to 3, "esteticista" to 3, "eletronica-automacao" to 2, "cozinha" to 2)
+            DynamicAnswer(
+                "Automatizar sistemas e trabalhar com eletrónica",
+                mapOf("eletronica-automacao" to 3, "sistemas-redes" to 1),
+                "q_motivation"
             ),
-            QuizAnswer(
-                "A analisar e resolver problemas técnicos",
-                mapOf("eletronica-automacao" to 2, "desenvolvimento-software" to 2, "sistemas-redes" to 2, "informatica-gestao" to 2)
+            DynamicAnswer(
+                "Gerir bases de dados, ERPs e sistemas empresariais",
+                mapOf("informatica-gestao" to 3),
+                "q_motivation"
+            ),
+            DynamicAnswer(
+                "Criar experiências interativas e conteúdo digital",
+                mapOf("conteudos-interativos" to 3, "multimedia" to 1),
+                "q_motivation"
             )
         )
     ),
-    QuizQuestion(
+
+    // ── Branch: Creative ─────────────────────────────────────────────────────
+    DynamicQuestion(
+        key = "q_creative",
+        question = "O que mais gostas de criar?",
+        emoji = "🎨",
+        answers = listOf(
+            DynamicAnswer(
+                "Vídeos, filmes e edição audiovisual",
+                mapOf("multimedia" to 3, "comunicacao" to 1),
+                "q_motivation"
+            ),
+            DynamicAnswer(
+                "Design gráfico, ilustrações e identidade visual",
+                mapOf("multimedia" to 2, "comunicacao" to 2),
+                "q_motivation"
+            ),
+            DynamicAnswer(
+                "Campanhas de marketing e redes sociais",
+                mapOf("comunicacao" to 3, "conteudos-interativos" to 1),
+                "q_motivation"
+            ),
+            DynamicAnswer(
+                "Jogos, animações e conteúdo interativo",
+                mapOf("conteudos-interativos" to 3, "multimedia" to 2),
+                "q_motivation"
+            ),
+            DynamicAnswer(
+                "Eventos, relações públicas e comunicação institucional",
+                mapOf("comunicacao" to 3),
+                "q_motivation"
+            )
+        )
+    ),
+
+    // ── Branch: Care / People ────────────────────────────────────────────────
+    DynamicQuestion(
+        key = "q_care",
+        question = "Com quem preferes trabalhar e ajudar?",
+        emoji = "🤝",
+        answers = listOf(
+            DynamicAnswer(
+                "Crianças e jovens em contexto educativo",
+                mapOf("acao-educativa" to 3),
+                "q_motivation"
+            ),
+            DynamicAnswer(
+                "Doentes, idosos ou pessoas em recuperação",
+                mapOf("auxiliar-saude" to 3),
+                "q_motivation"
+            ),
+            DynamicAnswer(
+                "Clientes que querem sentir-se bem e confiantes",
+                mapOf("cabeleireiro" to 2, "esteticista" to 2),
+                "q_motivation"
+            ),
+            DynamicAnswer(
+                "Atletas e pessoas com objetivos de saúde física",
+                mapOf("desporto" to 2, "auxiliar-saude" to 2),
+                "q_motivation"
+            ),
+            DynamicAnswer(
+                "Qualquer pessoa que precise de apoio e orientação",
+                mapOf("acao-educativa" to 2, "auxiliar-saude" to 2),
+                "q_motivation"
+            )
+        )
+    ),
+
+    // ── Branch: Hands-on / Food / Beauty ────────────────────────────────────
+    DynamicQuestion(
+        key = "q_hands",
+        question = "Que tipo de trabalho manual mais te satisfaz?",
+        emoji = "🙌",
+        answers = listOf(
+            DynamicAnswer(
+                "Cozinhar e criar pratos criativos",
+                mapOf("cozinha" to 3),
+                "q_motivation"
+            ),
+            DynamicAnswer(
+                "Cuidar do cabelo e criar penteados únicos",
+                mapOf("cabeleireiro" to 3),
+                "q_motivation"
+            ),
+            DynamicAnswer(
+                "Tratamentos de beleza e bem-estar da pele",
+                mapOf("esteticista" to 3),
+                "q_motivation"
+            ),
+            DynamicAnswer(
+                "Montar, reparar e instalar equipamentos",
+                mapOf("eletronica-automacao" to 3),
+                "q_motivation"
+            ),
+            DynamicAnswer(
+                "Decorar espaços e criar experiências únicas",
+                mapOf("cozinha" to 2, "acao-educativa" to 1),
+                "q_motivation"
+            )
+        )
+    ),
+
+    // ── Common Q3: Motivation ────────────────────────────────────────────────
+    DynamicQuestion(
+        key = "q_motivation",
         question = "O que mais te motiva no trabalho?",
         emoji = "✨",
         answers = listOf(
-            QuizAnswer(
-                "Fazer as pessoas sentirem-se bem e confiantes",
-                mapOf("cabeleireiro" to 3, "esteticista" to 3, "acao-educativa" to 1, "auxiliar-saude" to 1)
+            DynamicAnswer(
+                "Ver o impacto direto no bem-estar das pessoas",
+                mapOf("auxiliar-saude" to 2, "acao-educativa" to 2, "cabeleireiro" to 1, "esteticista" to 1),
+                "q_environment"
             ),
-            QuizAnswer(
-                "Criar algo visualmente impactante",
-                mapOf("comunicacao" to 3, "multimedia" to 3, "conteudos-interativos" to 2)
+            DynamicAnswer(
+                "Criar algo inovador e visualmente impressionante",
+                mapOf("multimedia" to 2, "comunicacao" to 2, "conteudos-interativos" to 1),
+                "q_environment"
             ),
-            QuizAnswer(
-                "Estar em movimento e ser ativo/a",
-                mapOf("desporto" to 3, "auxiliar-saude" to 1)
+            DynamicAnswer(
+                "Resolver desafios técnicos e complexos",
+                mapOf("desenvolvimento-software" to 2, "eletronica-automacao" to 2, "sistemas-redes" to 2),
+                "q_environment"
             ),
-            QuizAnswer(
-                "Preparar experiências gastronómicas únicas",
-                mapOf("cozinha" to 3, "acao-educativa" to 1)
+            DynamicAnswer(
+                "Estar em movimento, ativo/a e em competição",
+                mapOf("desporto" to 3, "auxiliar-saude" to 1),
+                "q_environment"
+            ),
+            DynamicAnswer(
+                "Construir algo do zero e ver o resultado final",
+                mapOf("cozinha" to 2, "cabeleireiro" to 1, "desenvolvimento-software" to 1),
+                "q_environment"
             )
         )
     ),
-    QuizQuestion(
-        question = "Onde te imaginas a trabalhar no futuro?",
+
+    // ── Common Q4: Work environment ──────────────────────────────────────────
+    DynamicQuestion(
+        key = "q_environment",
+        question = "Onde te imaginas a trabalhar daqui a 5 anos?",
         emoji = "🏢",
         answers = listOf(
-            QuizAnswer(
-                "Num salão de beleza, spa ou clínica",
-                mapOf("cabeleireiro" to 3, "esteticista" to 3)
+            DynamicAnswer(
+                "Ginásio, clube desportivo ou como treinador/a",
+                mapOf("desporto" to 3),
+                RESULTS_KEY
             ),
-            QuizAnswer(
-                "Num hospital, escola ou centro de saúde",
-                mapOf("auxiliar-saude" to 3, "acao-educativa" to 3)
+            DynamicAnswer(
+                "Empresa de tecnologia, startup ou consultora",
+                mapOf("desenvolvimento-software" to 2, "sistemas-redes" to 1, "informatica-gestao" to 1),
+                RESULTS_KEY
             ),
-            QuizAnswer(
-                "Numa empresa de tecnologia ou estúdio criativo",
-                mapOf(
-                    "desenvolvimento-software" to 2,
-                    "multimedia" to 2,
-                    "comunicacao" to 2,
-                    "informatica-gestao" to 1,
-                    "eletronica-automacao" to 1,
-                    "sistemas-redes" to 1,
-                    "conteudos-interativos" to 1
-                )
+            DynamicAnswer(
+                "Hospital, escola ou instituição de cuidados",
+                mapOf("auxiliar-saude" to 2, "acao-educativa" to 2),
+                RESULTS_KEY
             ),
-            QuizAnswer(
-                "Num restaurante, ginásio ou clube desportivo",
-                mapOf("cozinha" to 3, "desporto" to 3)
-            )
-        )
-    ),
-    QuizQuestion(
-        question = "Como te descreves melhor?",
-        emoji = "🌟",
-        answers = listOf(
-            QuizAnswer(
-                "Comunicativo/a e criativo/a",
-                mapOf("comunicacao" to 3, "multimedia" to 2, "conteudos-interativos" to 1)
+            DynamicAnswer(
+                "Salão de beleza, spa ou clínica estética",
+                mapOf("cabeleireiro" to 2, "esteticista" to 2),
+                RESULTS_KEY
             ),
-            QuizAnswer(
-                "Analítico/a e metódico/a",
-                mapOf("desenvolvimento-software" to 2, "informatica-gestao" to 2, "eletronica-automacao" to 2, "sistemas-redes" to 2)
-            ),
-            QuizAnswer(
-                "Energético/a e competitivo/a",
-                mapOf("desporto" to 3, "auxiliar-saude" to 1)
-            ),
-            QuizAnswer(
-                "Empático/a e prestativo/a",
-                mapOf("auxiliar-saude" to 3, "acao-educativa" to 2, "cozinha" to 1)
+            DynamicAnswer(
+                "Agência criativa, estúdio, restaurante ou freelancer",
+                mapOf("multimedia" to 2, "comunicacao" to 2, "cozinha" to 2),
+                RESULTS_KEY
             )
         )
     )
-)
 
-fun calculateRecommendedCourses(
-    selectedAnswers: List<Int>,
+).associateBy { it.key }
+
+fun calculateRecommendedCoursesFromScores(
+    scores: Map<String, Int>,
     courses: List<Course>
 ): List<Course> {
-    val scores = mutableMapOf<String, Int>()
-    selectedAnswers.forEachIndexed { qIndex, answerIndex ->
-        val question = quizQuestions.getOrNull(qIndex) ?: return@forEachIndexed
-        val answer = question.answers.getOrNull(answerIndex) ?: return@forEachIndexed
-        answer.courseScores.forEach { (courseId, score) ->
-            scores[courseId] = (scores[courseId] ?: 0) + score
-        }
-    }
     val courseMap = courses.associateBy { it.id }
     return scores.entries
         .sortedByDescending { it.value }

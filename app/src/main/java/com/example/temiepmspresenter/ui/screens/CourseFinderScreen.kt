@@ -27,6 +27,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -36,10 +37,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -52,8 +55,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.temiepmspresenter.data.Course
-import com.example.temiepmspresenter.data.calculateRecommendedCourses
-import com.example.temiepmspresenter.data.quizQuestions
+import com.example.temiepmspresenter.data.DynamicAnswer
+import com.example.temiepmspresenter.data.ESTIMATED_TOTAL_QUESTIONS
+import com.example.temiepmspresenter.data.RESULTS_KEY
+import com.example.temiepmspresenter.data.START_QUESTION_KEY
+import com.example.temiepmspresenter.data.calculateRecommendedCoursesFromScores
+import com.example.temiepmspresenter.data.dynamicQuestions
 import com.example.temiepmspresenter.ui.theme.EpmsPrimary
 import com.example.temiepmspresenter.ui.theme.EpmsSecondary
 import com.example.temiepmspresenter.ui.theme.categoryColor
@@ -64,28 +71,73 @@ fun CourseFinderScreen(
     onBack: () -> Unit,
     onCourseSelected: (Course) -> Unit
 ) {
-    var currentQuestion by remember { mutableStateOf(0) }
-    val selectedAnswers = remember { mutableStateListOf<Int>() }
+    // ── State ────────────────────────────────────────────────────────────────
+    var currentQuestionKey by remember { mutableStateOf(START_QUESTION_KEY) }
+    val questionHistory = remember { mutableStateListOf<String>() }
+    val scoreHistory = remember { mutableStateListOf<Map<String, Int>>() }
+    val cumulativeScores = remember { mutableStateMapOf<String, Int>() }
     var showResults by remember { mutableStateOf(false) }
     var recommendedCourses by remember { mutableStateOf<List<Course>>(emptyList()) }
+    var navigatingForward by remember { mutableStateOf(true) }
 
+    val currentQuestion = dynamicQuestions[currentQuestionKey]
+    val questionsAnswered = questionHistory.size
+    val canGoBack = questionHistory.isNotEmpty() || showResults
+
+    // ── Navigation helpers ───────────────────────────────────────────────────
+    fun subtractLastScores() {
+        if (scoreHistory.isEmpty()) return
+        val lastScores = scoreHistory.removeAt(scoreHistory.lastIndex)
+        lastScores.forEach { (id, score) ->
+            val updated = (cumulativeScores[id] ?: 0) - score
+            if (updated <= 0) cumulativeScores.remove(id) else cumulativeScores[id] = updated
+        }
+    }
+
+    fun goToPreviousQuestion() {
+        navigatingForward = false
+        if (showResults) {
+            showResults = false
+            subtractLastScores()
+            if (questionHistory.isNotEmpty()) {
+                currentQuestionKey = questionHistory.removeAt(questionHistory.lastIndex)
+            }
+        } else if (questionHistory.isNotEmpty()) {
+            subtractLastScores()
+            currentQuestionKey = questionHistory.removeAt(questionHistory.lastIndex)
+        }
+    }
+
+    fun answerQuestion(answer: DynamicAnswer) {
+        navigatingForward = true
+        questionHistory.add(currentQuestionKey)
+        scoreHistory.add(answer.courseScores)
+        answer.courseScores.forEach { (id, score) ->
+            cumulativeScores[id] = (cumulativeScores[id] ?: 0) + score
+        }
+        if (answer.nextQuestionKey == RESULTS_KEY) {
+            recommendedCourses = calculateRecommendedCoursesFromScores(cumulativeScores.toMap(), courses)
+            showResults = true
+        } else {
+            currentQuestionKey = answer.nextQuestionKey
+        }
+    }
+
+    // ── UI ───────────────────────────────────────────────────────────────────
     Scaffold(containerColor = MaterialTheme.colorScheme.background) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // Gradient header
+            // Header
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(
-                        brush = Brush.horizontalGradient(
-                            colors = listOf(EpmsPrimary, EpmsSecondary)
-                        )
-                    )
+                    .background(Brush.horizontalGradient(listOf(EpmsPrimary, EpmsSecondary)))
                     .padding(horizontal = 16.dp, vertical = 18.dp)
             ) {
+                // Left — previous question (or home if at Q1)
                 Box(
                     modifier = Modifier
                         .align(Alignment.CenterStart)
@@ -93,16 +145,20 @@ fun CourseFinderScreen(
                         .background(Color.White.copy(alpha = 0.18f), CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
-                    IconButton(onClick = onBack, modifier = Modifier.fillMaxSize()) {
+                    IconButton(
+                        onClick = { if (canGoBack) goToPreviousQuestion() else onBack() },
+                        modifier = Modifier.fillMaxSize()
+                    ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Voltar",
-                            tint = Color.White,
+                            contentDescription = if (canGoBack) "Pergunta anterior" else "Voltar ao início",
+                            tint = if (canGoBack) Color.White else Color.White.copy(alpha = 0.45f),
                             modifier = Modifier.size(20.dp)
                         )
                     }
                 }
 
+                // Center — title
                 Column(
                     modifier = Modifier.align(Alignment.Center),
                     horizontalAlignment = Alignment.CenterHorizontally
@@ -116,40 +172,68 @@ fun CourseFinderScreen(
                         color = Color.White
                     )
                     Text(
-                        text = if (showResults) "Os teus resultados" else "Pergunta ${currentQuestion + 1} de ${quizQuestions.size}",
+                        text = if (showResults) "Os teus resultados"
+                               else "Pergunta ${questionsAnswered + 1} de $ESTIMATED_TOTAL_QUESTIONS",
                         style = MaterialTheme.typography.labelSmall,
                         color = Color.White.copy(alpha = 0.8f)
                     )
                 }
+
+                // Right — home
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .size(40.dp)
+                        .background(Color.White.copy(alpha = 0.18f), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    IconButton(onClick = onBack, modifier = Modifier.fillMaxSize()) {
+                        Icon(
+                            imageVector = Icons.Filled.Home,
+                            contentDescription = "Voltar ao início",
+                            tint = Color.White,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
             }
 
             if (!showResults) {
+                // Progress bar
                 LinearProgressIndicator(
-                    progress = { currentQuestion.toFloat() / quizQuestions.size },
+                    progress = { questionsAnswered.toFloat() / ESTIMATED_TOTAL_QUESTIONS },
                     modifier = Modifier.fillMaxWidth(),
                     color = EpmsSecondary,
                     trackColor = MaterialTheme.colorScheme.surfaceVariant
                 )
 
+                // Question content — slides in/out based on direction
                 AnimatedContent(
-                    targetState = currentQuestion,
+                    targetState = currentQuestionKey,
                     transitionSpec = {
-                        (slideInHorizontally(tween(280)) { it } + fadeIn(tween(200))).togetherWith(
-                            slideOutHorizontally(tween(220)) { -it } + fadeOut(tween(150))
-                        )
+                        if (navigatingForward) {
+                            (slideInHorizontally(tween(280)) { it } + fadeIn(tween(200))).togetherWith(
+                                slideOutHorizontally(tween(220)) { -it } + fadeOut(tween(150))
+                            )
+                        } else {
+                            (slideInHorizontally(tween(280)) { -it } + fadeIn(tween(200))).togetherWith(
+                                slideOutHorizontally(tween(220)) { it } + fadeOut(tween(150))
+                            )
+                        }
                     },
                     label = "questionTransition"
-                ) { qIndex ->
-                    val question = quizQuestions[qIndex]
+                ) { qKey ->
+                    val question = dynamicQuestions[qKey] ?: return@AnimatedContent
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
-                            .padding(horizontal = 24.dp, vertical = 20.dp),
-                        verticalArrangement = Arrangement.spacedBy(14.dp)
+                            .padding(horizontal = 24.dp, vertical = 24.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
+                        // Question card
                         Card(
-                            shape = RoundedCornerShape(20.dp),
+                            shape = RoundedCornerShape(24.dp),
                             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                             elevation = CardDefaults.cardElevation(4.dp),
                             modifier = Modifier.fillMaxWidth()
@@ -157,34 +241,30 @@ fun CourseFinderScreen(
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(24.dp),
+                                    .padding(28.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Text(text = question.emoji, fontSize = 40.sp)
-                                Spacer(modifier = Modifier.height(12.dp))
+                                Text(text = question.emoji, fontSize = 44.sp)
+                                Spacer(modifier = Modifier.height(14.dp))
                                 Text(
                                     text = question.question,
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold,
                                     textAlign = TextAlign.Center,
-                                    color = MaterialTheme.colorScheme.onSurface
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    lineHeight = 26.sp
                                 )
                             }
                         }
 
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        // Answer options
                         question.answers.forEachIndexed { index, answer ->
                             AnswerButton(
                                 text = answer.text,
                                 answerIndex = index,
-                                onClick = {
-                                    selectedAnswers.add(index)
-                                    if (currentQuestion < quizQuestions.size - 1) {
-                                        currentQuestion++
-                                    } else {
-                                        recommendedCourses = calculateRecommendedCourses(selectedAnswers, courses)
-                                        showResults = true
-                                    }
-                                }
+                                onClick = { answerQuestion(answer) }
                             )
                         }
 
@@ -195,11 +275,15 @@ fun CourseFinderScreen(
                 ResultsScreen(
                     recommendedCourses = recommendedCourses,
                     onCourseSelected = onCourseSelected,
+                    onBack = { goToPreviousQuestion() },
                     onRetry = {
-                        currentQuestion = 0
-                        selectedAnswers.clear()
+                        currentQuestionKey = START_QUESTION_KEY
+                        questionHistory.clear()
+                        scoreHistory.clear()
+                        cumulativeScores.clear()
                         showResults = false
                         recommendedCourses = emptyList()
+                        navigatingForward = true
                     }
                 )
             }
@@ -211,7 +295,8 @@ private val answerAccentColors = listOf(
     Color(0xFF1976D2),
     Color(0xFF388E3C),
     Color(0xFFF57C00),
-    Color(0xFF7B1FA2)
+    Color(0xFF7B1FA2),
+    Color(0xFFD32F2F)
 )
 
 @Composable
@@ -219,7 +304,7 @@ fun AnswerButton(text: String, answerIndex: Int, onClick: () -> Unit) {
     val accentColor = answerAccentColors[answerIndex % answerAccentColors.size]
     Card(
         onClick = onClick,
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp, pressedElevation = 1.dp),
         modifier = Modifier.fillMaxWidth()
@@ -227,12 +312,12 @@ fun AnswerButton(text: String, answerIndex: Int, onClick: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(horizontal = 16.dp, vertical = 18.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(42.dp)
+                    .size(46.dp)
                     .background(accentColor.copy(alpha = 0.12f), CircleShape),
                 contentAlignment = Alignment.Center
             ) {
@@ -240,15 +325,16 @@ fun AnswerButton(text: String, answerIndex: Int, onClick: () -> Unit) {
                     text = ('A' + answerIndex).toChar().toString(),
                     fontWeight = FontWeight.Bold,
                     color = accentColor,
-                    fontSize = 17.sp
+                    fontSize = 18.sp
                 )
             }
-            Spacer(modifier = Modifier.width(14.dp))
+            Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = text,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                lineHeight = 20.sp
             )
         }
     }
@@ -258,6 +344,7 @@ fun AnswerButton(text: String, answerIndex: Int, onClick: () -> Unit) {
 fun ResultsScreen(
     recommendedCourses: List<Course>,
     onCourseSelected: (Course) -> Unit,
+    onBack: () -> Unit,
     onRetry: () -> Unit
 ) {
     var visible by remember { mutableStateOf(false) }
@@ -318,12 +405,19 @@ fun ResultsScreen(
             visible = visible,
             enter = fadeIn(tween(400, delayMillis = 650))
         ) {
-            OutlinedButton(
-                onClick = onRetry,
-                shape = RoundedCornerShape(50.dp),
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.padding(top = 4.dp)
             ) {
-                Text("🔄  Repetir questionário")
+                TextButton(onClick = onBack) {
+                    Text("← Última pergunta")
+                }
+                OutlinedButton(
+                    onClick = onRetry,
+                    shape = RoundedCornerShape(50.dp)
+                ) {
+                    Text("🔄  Repetir")
+                }
             }
         }
 

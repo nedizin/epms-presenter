@@ -20,7 +20,6 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -171,21 +170,6 @@ fun ChatOverlay(onNavigateToCourseFinder: () -> Unit = {}) {
                         delay(80)
                         listState.animateScrollToItem(messages.lastIndex)
                     }
-                },
-                onDiscoverCourse = {
-                    scope.launch {
-                        messages.add(ChatMessage("Descobre o teu curso 🧭", isBot = false))
-                        listState.animateScrollToItem(messages.lastIndex)
-                        isTyping = true
-                        delay(900)
-                        isTyping = false
-                        messages.add(ChatMessage("Ótimo! Vou ajudar-te a descobrir o curso ideal para ti. Prepara-te para responder a algumas perguntas! ✨", isBot = true))
-                        delay(80)
-                        listState.animateScrollToItem(messages.lastIndex)
-                        delay(700)
-                        isOpen = false
-                        onNavigateToCourseFinder()
-                    }
                 }
             )
         }
@@ -250,8 +234,7 @@ fun ChatPanel(
     isSpeaking: Boolean,
     onClose: () -> Unit,
     onToggleSpeech: () -> Unit,
-    onOptionSelected: (ChatOption) -> Unit,
-    onDiscoverCourse: () -> Unit
+    onOptionSelected: (ChatOption) -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(20.dp),
@@ -347,40 +330,6 @@ fun ChatPanel(
                 }
                 if (isTyping) {
                     item { TypingBubble() }
-                }
-            }
-
-            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant, thickness = 1.dp)
-
-            // "Descobre o teu curso" highlight button
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 12.dp, vertical = 8.dp)
-                    .fillMaxWidth()
-                    .background(
-                        brush = Brush.horizontalGradient(listOf(EpmsPrimary, EpmsSecondary)),
-                        shape = RoundedCornerShape(12.dp)
-                    )
-                    .clickable { onDiscoverCourse() }
-                    .padding(horizontal = 14.dp, vertical = 10.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "🧭", fontSize = 18.sp)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "Descobre o teu curso",
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                        Text(
-                            text = "Responde a algumas perguntas e encontra o curso ideal!",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = Color.White.copy(alpha = 0.85f)
-                        )
-                    }
-                    Text(text = "→", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
             }
 
